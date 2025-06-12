@@ -29,7 +29,14 @@ func main() {
 	mux.HandleFunc("/snippet/view", viewSnippet)
 	mux.HandleFunc("/snippet/create", createSnippet)
 
+	// Creating a new http.Server struct, to use the error logger
+	srv := &http.Server{
+		Addr:     *addr,
+		ErrorLog: errorLog,
+		Handler:  mux,
+	}
+
 	infoLog.Printf("Starting server at port %s", *addr)
-	err := http.ListenAndServe(*addr, mux)
+	err := srv.ListenAndServe()
 	errorLog.Fatal(err)
 }
