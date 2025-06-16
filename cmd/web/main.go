@@ -28,23 +28,11 @@ func main() {
 		infoLog:  infoLog,
 	}
 
-	// fileserver for static files
-	fileserver := http.FileServer(http.Dir("./ui/static/"))
-
-	// A new mux for hadling requests
-	mux := http.NewServeMux()
-
-	mux.Handle("/static/", http.StripPrefix("/static", fileserver))
-
-	mux.HandleFunc("/", app.home)
-	mux.HandleFunc("/snippet/view", app.viewSnippet)
-	mux.HandleFunc("/snippet/create", app.createSnippet)
-
 	// Creating a new http.Server struct, to use the error logger
 	srv := &http.Server{
 		Addr:     *addr,
 		ErrorLog: errorLog,
-		Handler:  mux,
+		Handler:  app.routes(),
 	}
 
 	infoLog.Printf("Starting server at port %s", *addr)
